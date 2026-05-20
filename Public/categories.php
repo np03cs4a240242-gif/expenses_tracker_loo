@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap_form.php';
-require_once __DIR__ . '/../src/models/CategoryModel.php';
+require_once __DIR__ . '/../Src/models/CategoryModel.php';
 
 require_auth();
 $user = auth_user();
@@ -41,7 +41,7 @@ if (is_post() && ($_POST['action'] ?? '') === 'delete') {
 
 $categories = CategoryModel::allForUser((int)$user['id']);
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
@@ -70,7 +70,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         <?php if ($errors['name']): ?><div class="hint error"><?= e($errors['name']) ?></div><?php endif; ?>
       </div>
 
-      <button class="btn" type="submit">Add</button>
+      <button class="btn btn-primary" type="submit">Add</button>
     </form>
   </section>
 
@@ -100,4 +100,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   </section>
 </div>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

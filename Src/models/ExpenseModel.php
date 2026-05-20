@@ -168,6 +168,14 @@ final class ExpenseModel
     return (float)$stmt->fetchColumn();
   }
 
+  public static function sumAll(int $userId): float
+  {
+    $pdo = db();
+    $stmt = $pdo->prepare('SELECT COALESCE(SUM(amount),0) AS total FROM expenses WHERE user_id = ?');
+    $stmt->execute([$userId]);
+    return (float)$stmt->fetchColumn();
+  }
+
   public static function recent(int $userId, int $limit = 7): array
   {
     $pdo = db();
@@ -182,6 +190,24 @@ final class ExpenseModel
     $stmt->bindValue(1, $userId, PDO::PARAM_INT);
     $stmt->bindValue(2, $limit, PDO::PARAM_INT);
     $stmt->execute();
+    return $stmt->fetchAll();
+  }
+
+  public static function categoryBreakdown(int $userId, string $monthKey): array
+  {
+    $start = $monthKey . '-01';
+    $end = date('Y-m-t', strtotime($start));
+
+    $pdo = db();
+    $stmt = $pdo->prepare('
+      SELECT c.name, COALESCE(SUM(e.amount), 0) AS total
+      FROM expenses e
+      LEFT JOIN categories c ON c.id = e.category_id
+      WHERE e.user_id = ? AND e.expense_date BETWEEN ? AND ?
+      GROUP BY c.name
+      ORDER BY total DESC
+    ');
+    $stmt->execute([$userId, $start, $end]);
     return $stmt->fetchAll();
   }
 }

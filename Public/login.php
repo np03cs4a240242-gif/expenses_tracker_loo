@@ -38,13 +38,17 @@ if (is_post()) {
   }
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
-<div class="auth-wrap">
-  <section class="card auth-card">
-    <h1>Login</h1>
-    <p class="muted">Enter your password and then confirm the login with the code we send.</p>
 
+<div style="max-width:440px; margin: 0 auto; padding-top: var(--space-6);">
+  <div style="text-align:center; margin-bottom: var(--space-6);">
+    <div style="width:48px;height:48px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--fg);color:var(--bg);font-weight:800;font-size:16px;margin:0 auto var(--space-3);">ET</div>
+    <h1 style="margin-bottom:4px;">Welcome back</h1>
+    <p class="muted">Sign in to your ExpenseTracker account</p>
+  </div>
+
+  <div class="card" style="padding: var(--space-6);">
     <?php if ($errors['general']): ?>
       <div class="alert"><?= e($errors['general']) ?></div>
     <?php endif; ?>
@@ -64,30 +68,17 @@ require_once __DIR__ . '/../src/partials/header.php';
         <?php if ($errors['password']): ?><div class="hint error"><?= e($errors['password']) ?></div><?php endif; ?>
       </div>
 
-      <button class="btn btn-block" type="submit">Continue</button>
-
-      <div class="auth-links muted small">
-        <span>
-          New here?
-          <a href="<?= e(base_url('/register.php')) ?>">Create an account</a>
-        </span>
-        <span>
-          <a href="<?= e(base_url('/forgot_password.php')) ?>">Forgot password?</a>
-        </span>
-      </div>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top: var(--space-2);">Continue</button>
     </form>
-  </section>
+  </div>
 
-  <aside class="card auth-side">
-    <h2>A quick note</h2>
-    <p class="muted">
-      A short daily entry is enough. You do not need to remember every payment later.
+  <div style="text-align:center; margin-top: var(--space-4);">
+    <p class="small muted">
+      New here? <a href="<?= e(base_url('/register.php')) ?>">Create an account</a>
+      &nbsp;&middot;&nbsp;
+      <a href="<?= e(base_url('/forgot_password.php')) ?>">Forgot password?</a>
     </p>
-
-    <div class="mini-stat">
-      <div class="mini-stat-label">Good habit</div>
-      <div class="mini-stat-value">Write it down while it is fresh</div>
-    </div>
-  </aside>
+  </div>
 </div>
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

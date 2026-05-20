@@ -32,4 +32,3 @@ return [
     'gemini_timeout_seconds' => 30,
   ],
 ];
-

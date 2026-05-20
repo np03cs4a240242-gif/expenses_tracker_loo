@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap_form.php';
 require_once __DIR__ . '/../Src/models/WalletTransactionModel.php';
+require_once __DIR__ . '/../Src/models/WalletModel.php';
 
 require_auth();
 $user = auth_user();
@@ -28,7 +29,7 @@ if ($filters['to'] && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $filters['to'])) $fil
 $rows = WalletTransactionModel::list((int)$user['id'], $filters, 250);
 $totalCount = WalletTransactionModel::count((int)$user['id'], $filters);
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
@@ -71,7 +72,7 @@ require_once __DIR__ . '/../src/partials/header.php';
     </div>
 
     <div class="row-actions">
-      <button class="btn" type="submit">Apply</button>
+      <button class="btn btn-primary" type="submit">Apply</button>
       <a class="btn btn-ghost" href="<?= e(base_url('/wallet_history.php')) ?>">Reset</a>
     </div>
   </form>
@@ -87,7 +88,7 @@ require_once __DIR__ . '/../src/partials/header.php';
     <p class="muted">No transactions found.</p>
   <?php else: ?>
     <div class="table">
-      <div class="row head">
+      <div class="table-row head">
         <div>Date</div>
         <div>Type</div>
         <div>Note</div>
@@ -96,7 +97,7 @@ require_once __DIR__ . '/../src/partials/header.php';
       </div>
 
       <?php foreach ($rows as $tx): ?>
-        <div class="row">
+        <div class="table-row">
           <div><?= e(date('Y-m-d H:i', strtotime((string)$tx['created_at']))) ?></div>
           <div>
             <span class="badge badge-<?= e($tx['type'] === 'topup' ? 'success' : ($tx['type'] === 'refund' ? 'info' : 'danger')) ?>">
@@ -104,7 +105,7 @@ require_once __DIR__ . '/../src/partials/header.php';
             </span>
           </div>
           <div class="truncate"><?= e($tx['note'] ?? '') ?></div>
-          <div class="right <?= $tx['type'] === 'topup' || $tx['type'] === 'refund' ? 'text-success' : 'text-danger' ?>">
+          <div class="right" style="color: <?= $tx['type'] === 'topup' || $tx['type'] === 'refund' ? 'var(--success)' : 'var(--danger)' ?>">
             <?= $tx['type'] === 'topup' || $tx['type'] === 'refund' ? '+' : '-' ?><?= e($currency) ?> <?= e(money_fmt((float)$tx['amount'])) ?>
           </div>
           <div class="right strong"><?= e($currency) ?> <?= e(money_fmt((float)$tx['balance_after'])) ?></div>
@@ -114,4 +115,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   <?php endif; ?>
 </section>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

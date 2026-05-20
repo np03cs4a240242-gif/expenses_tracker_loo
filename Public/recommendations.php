@@ -36,7 +36,7 @@ $typeLabels = [
   'wallet_advice' => 'Wallet Advice',
 ];
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
@@ -69,4 +69,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   <?php endforeach; ?>
 <?php endif; ?>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

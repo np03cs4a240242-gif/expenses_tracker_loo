@@ -40,7 +40,7 @@ if (is_post()) {
   }
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="auth-wrap">
   <section class="card auth-card">
@@ -66,7 +66,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         <?php if ($errors['confirm_password']): ?><div class="hint error"><?= e($errors['confirm_password']) ?></div><?php endif; ?>
       </div>
 
-      <button class="btn btn-block" type="submit">Save password</button>
+      <button class="btn btn-primary btn-block" type="submit">Save password</button>
 
       <div class="auth-links muted small">
         <span>Resetting for: <?= e((string)$resetUser['email']) ?></span>
@@ -84,4 +84,4 @@ require_once __DIR__ . '/../src/partials/header.php';
     </ul>
   </aside>
 </div>
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

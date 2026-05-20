@@ -204,7 +204,7 @@ function getRecentSearchSuggestions(string $query, string $lowerQuery): array
 
   foreach ($recentSearches as $search) {
     $searchStr = (string)$search;
-    if (stripos($searchStr, $query) !== false && stripos($searchStr, $query) !== 0) {
+    if (stripos($searchStr, $query) !== false) {
       $suggestions[] = [
         'type' => 'recent',
         'label' => $searchStr,

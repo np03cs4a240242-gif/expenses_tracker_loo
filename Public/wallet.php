@@ -68,12 +68,12 @@ $monthEnd = date('Y-m-t');
 $monthTopup = WalletModel::getTotalTopup((int)$user['id'], $monthStart . ' 00:00:00', $monthEnd . ' 23:59:59');
 $monthSpent = WalletModel::getTotalSpent((int)$user['id'], $monthStart . ' 00:00:00', $monthEnd . ' 23:59:59');
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
     <h1>Wallet</h1>
-    <p class="muted">Manage your e-wallet balance, top up, withdraw, and view transactions.</p>
+    <p class="page-head-subtitle">Manage your e-wallet balance, top up, withdraw, and view transactions.</p>
   </div>
   <div class="actions">
     <a class="btn btn-ghost" href="<?= e(base_url('/wallet_history.php')) ?>">View all transactions</a>
@@ -81,28 +81,32 @@ require_once __DIR__ . '/../src/partials/header.php';
 </div>
 
 <div class="grid stats-grid">
-  <div class="card stat">
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
     <div class="stat-label">Current balance</div>
-    <div class="stat-value"><?= e($currency) ?> <?= e(money_fmt($balance)) ?></div>
-    <div class="stat-sub muted">Available for expenses</div>
+    <div class="stat-value tabular"><?= e($currency) ?> <?= e(money_fmt($balance)) ?></div>
+    <div class="stat-sub">Available for expenses</div>
   </div>
 
-  <div class="card stat">
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
     <div class="stat-label">Top-up this month</div>
-    <div class="stat-value"><?= e($currency) ?> <?= e(money_fmt($monthTopup)) ?></div>
-    <div class="stat-sub muted"><?= e(date('F Y')) ?></div>
+    <div class="stat-value tabular"><?= e($currency) ?> <?= e(money_fmt($monthTopup)) ?></div>
+    <div class="stat-sub"><?= e(date('F Y')) ?></div>
   </div>
 
-  <div class="card stat">
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
     <div class="stat-label">Spent from wallet</div>
-    <div class="stat-value"><?= e($currency) ?> <?= e(money_fmt($monthSpent)) ?></div>
-    <div class="stat-sub muted"><?= e(date('F Y')) ?></div>
+    <div class="stat-value tabular"><?= e($currency) ?> <?= e(money_fmt($monthSpent)) ?></div>
+    <div class="stat-sub"><?= e(date('F Y')) ?></div>
   </div>
 
-  <div class="card stat">
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
     <div class="stat-label">Currency</div>
-    <div class="stat-value"><?= e($currency) ?></div>
-    <div class="stat-sub muted">Nepalese Rupee</div>
+    <div class="stat-value tabular"><?= e($currency) ?></div>
+    <div class="stat-sub">Nepalese Rupee</div>
   </div>
 </div>
 
@@ -131,7 +135,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         <input name="note" maxlength="255" placeholder="e.g., Salary top-up">
       </div>
 
-      <button class="btn" type="submit">Top up</button>
+      <button class="btn btn-primary" type="submit">Top up</button>
     </form>
   </section>
 
@@ -174,7 +178,7 @@ require_once __DIR__ . '/../src/partials/header.php';
     <p class="muted">No transactions yet. Top up your wallet to get started.</p>
   <?php else: ?>
     <div class="table">
-      <div class="row head">
+      <div class="table-row head">
         <div>Date</div>
         <div>Type</div>
         <div>Note</div>
@@ -183,7 +187,7 @@ require_once __DIR__ . '/../src/partials/header.php';
       </div>
 
       <?php foreach ($recentTx as $tx): ?>
-        <div class="row">
+        <div class="table-row">
           <div><?= e(date('Y-m-d H:i', strtotime((string)$tx['created_at']))) ?></div>
           <div>
             <span class="badge badge-<?= e($tx['type'] === 'topup' ? 'success' : ($tx['type'] === 'refund' ? 'info' : 'danger')) ?>">
@@ -191,7 +195,7 @@ require_once __DIR__ . '/../src/partials/header.php';
             </span>
           </div>
           <div class="truncate"><?= e($tx['note'] ?? '') ?></div>
-          <div class="right <?= $tx['type'] === 'topup' || $tx['type'] === 'refund' ? 'text-success' : 'text-danger' ?>">
+          <div class="right" style="color: <?= $tx['type'] === 'topup' || $tx['type'] === 'refund' ? 'var(--success)' : 'var(--danger)' ?>">
             <?= $tx['type'] === 'topup' || $tx['type'] === 'refund' ? '+' : '-' ?><?= e($currency) ?> <?= e(money_fmt((float)$tx['amount'])) ?>
           </div>
           <div class="right strong"><?= e($currency) ?> <?= e(money_fmt((float)$tx['balance_after'])) ?></div>
@@ -201,4 +205,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   <?php endif; ?>
 </section>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

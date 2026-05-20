@@ -59,18 +59,39 @@
       return;
     }
 
+    const chartColors = [
+      "oklch(65% 0.18 25)",
+      "oklch(65% 0.18 340)",
+      "oklch(60% 0.16 255)",
+      "oklch(55% 0.16 290)",
+      "oklch(62% 0.14 160)",
+      "oklch(70% 0.16 80)",
+      "oklch(65% 0.12 200)",
+      "oklch(55% 0.02 250)",
+      "oklch(50% 0.018 240)",
+      "oklch(45% 0.14 30)",
+    ];
+
     const categoryChart = document.getElementById("catChart");
     if (categoryChart) {
+      const colors = window.__REPORTS__.cat.labels.map(function (_, i) {
+        return chartColors[i % chartColors.length];
+      });
       new Chart(categoryChart, {
         type: "doughnut",
         data: {
           labels: window.__REPORTS__.cat.labels,
-          datasets: [{ data: window.__REPORTS__.cat.totals }]
+          datasets: [{
+            data: window.__REPORTS__.cat.totals,
+            backgroundColor: colors,
+            borderColor: "oklch(100% 0 0)",
+            borderWidth: 2,
+          }]
         },
         options: {
           responsive: true,
           plugins: {
-            legend: { position: "bottom" },
+            legend: { position: "bottom", labels: { usePointStyle: true, pointStyle: "circle", padding: 16, font: { size: 12 } } },
             tooltip: {
               callbacks: {
                 label: function (context) {
@@ -89,7 +110,11 @@
         type: "bar",
         data: {
           labels: window.__REPORTS__.month.labels,
-          datasets: [{ data: window.__REPORTS__.month.totals }]
+          datasets: [{
+            data: window.__REPORTS__.month.totals,
+            backgroundColor: "oklch(55% 0.16 255)",
+            borderRadius: 4,
+          }]
         },
         options: {
           responsive: true,
@@ -106,11 +131,17 @@
           scales: {
             y: {
               beginAtZero: true,
+              grid: { color: "oklch(93% 0.005 250)" },
               ticks: {
                 callback: function (value) {
                   return "Rs. " + value;
-                }
+                },
+                font: { size: 11 },
               }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11 } },
             }
           }
         }
@@ -198,14 +229,14 @@
 
     function getIconForType(icon) {
       const icons = {
-        "calendar": "📅",
-        "tag": "🏷️",
-        "clock": "🕐",
-        "note": "📝",
-        "payment": "💳",
-        "amount": "💰",
+        "calendar": "Date",
+        "tag": "Tag",
+        "clock": "Time",
+        "note": "Note",
+        "payment": "Pay",
+        "amount": "Amt",
       };
-      return icons[icon] || "🔍";
+      return icons[icon] || "Q";
     }
 
     function getTypeLabel(type) {

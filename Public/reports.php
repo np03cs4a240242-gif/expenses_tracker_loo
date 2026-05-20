@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap.php';
-require_once __DIR__ . '/../src/models/ReportModel.php';
+require_once __DIR__ . '/../Src/models/ReportModel.php';
 
 require_auth();
 $user = auth_user();
@@ -35,7 +35,7 @@ for ($m = 1; $m <= 12; $m++) {
   $monthTotals[] = $monthMap[$mk] ?? 0.0;
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
@@ -65,30 +65,29 @@ require_once __DIR__ . '/../src/partials/header.php';
       </div>
       <div class="field">
         <label>&nbsp;</label>
-        <button class="btn" type="submit">Update</button>
+        <button class="btn btn-primary" type="submit">Update</button>
       </div>
     </div>
   </form>
 
   <div class="grid two-col">
-    <div class="card inner">
-      <h3>Chart</h3>
+    <div class="card">
+      <h3>Spending by category</h3>
       <canvas id="catChart" height="180"></canvas>
-      <div class="muted small">Uses Chart.js CDN.</div>
     </div>
 
-    <div class="card inner">
+    <div class="card">
       <h3>Table</h3>
       <?php if (!$byCategory): ?>
         <p class="muted">No data in selected range.</p>
       <?php else: ?>
         <div class="table">
-          <div class="row head">
+          <div class="table-row head">
             <div>Category</div>
             <div class="right">Total</div>
           </div>
           <?php foreach ($byCategory as $r): ?>
-            <div class="row">
+            <div class="table-row">
               <div><?= e($r['category']) ?></div>
               <div class="right strong">₹ <?= e(money_fmt((float)$r['total'])) ?></div>
             </div>
@@ -105,20 +104,20 @@ require_once __DIR__ . '/../src/partials/header.php';
   </div>
 
   <div class="grid two-col">
-    <div class="card inner">
-      <h3>Chart</h3>
+    <div class="card">
+      <h3>Monthly trend</h3>
       <canvas id="monthChart" height="180"></canvas>
     </div>
 
-    <div class="card inner">
+    <div class="card">
       <h3>Table</h3>
       <div class="table">
-        <div class="row head">
+        <div class="table-row head">
           <div>Month</div>
           <div class="right">Total</div>
         </div>
         <?php for ($i = 0; $i < count($months); $i++): ?>
-          <div class="row">
+          <div class="table-row">
             <div><?= e($months[$i]) ?></div>
             <div class="right strong">₹ <?= e(money_fmt((float)$monthTotals[$i])) ?></div>
           </div>
@@ -143,4 +142,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   };
 </script>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

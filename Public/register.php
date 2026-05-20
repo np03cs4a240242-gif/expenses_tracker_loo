@@ -43,13 +43,17 @@ if (is_post()) {
   }
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
-<div class="auth-wrap">
-  <section class="card auth-card">
-    <h1>Create account</h1>
-    <p class="muted">Create your account, verify your email, and start tracking your expenses in a simple way.</p>
 
+<div style="max-width:440px; margin: 0 auto; padding-top: var(--space-6);">
+  <div style="text-align:center; margin-bottom: var(--space-6);">
+    <div style="width:48px;height:48px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--fg);color:var(--bg);font-weight:800;font-size:16px;margin:0 auto var(--space-3);">ET</div>
+    <h1 style="margin-bottom:4px;">Create account</h1>
+    <p class="muted">Start tracking your expenses in a simple way</p>
+  </div>
+
+  <div class="card" style="padding: var(--space-6);">
     <?php if ($errors['general']): ?>
       <div class="alert"><?= e($errors['general']) ?></div>
     <?php endif; ?>
@@ -75,28 +79,15 @@ require_once __DIR__ . '/../src/partials/header.php';
         <?php if ($errors['password']): ?><div class="hint error"><?= e($errors['password']) ?></div><?php endif; ?>
       </div>
 
-      <button class="btn btn-block" type="submit">Create account</button>
-
-      <div class="auth-links muted small">
-        <span>
-          Already have an account?
-          <a href="<?= e(base_url('/login.php')) ?>">Login</a>
-        </span>
-        <span>
-          <a href="<?= e(base_url('/forgot_password.php')) ?>">Forgot password?</a>
-        </span>
-      </div>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top: var(--space-2);">Create account</button>
     </form>
-  </section>
+  </div>
 
-  <aside class="card auth-side">
-    <h2>What happens next</h2>
-    <ul class="checklist">
-      <li>Create your account</li>
-      <li>Get a one-time code</li>
-      <li>Verify your email</li>
-      <li>Open your dashboard</li>
-    </ul>
-  </aside>
+  <div style="text-align:center; margin-top: var(--space-4);">
+    <p class="small muted">
+      Already have an account? <a href="<?= e(base_url('/login.php')) ?>">Sign in</a>
+    </p>
+  </div>
 </div>
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

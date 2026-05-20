@@ -30,7 +30,7 @@ if (is_post()) {
   }
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="auth-wrap">
   <section class="card auth-card">
@@ -50,7 +50,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         <?php if ($errors['email']): ?><div class="hint error"><?= e($errors['email']) ?></div><?php endif; ?>
       </div>
 
-      <button class="btn btn-block" type="submit">Send reset code</button>
+      <button class="btn btn-primary btn-block" type="submit">Send reset code</button>
 
       <div class="auth-links muted small">
         <span><a href="<?= e(base_url('/login.php')) ?>">Back to login</a></span>
@@ -69,4 +69,4 @@ require_once __DIR__ . '/../src/partials/header.php';
     </ul>
   </aside>
 </div>
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

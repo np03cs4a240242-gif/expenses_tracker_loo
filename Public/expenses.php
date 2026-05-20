@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap_form.php';
-require_once __DIR__ . '/../src/models/ExpenseModel.php';
-require_once __DIR__ . '/../src/models/CategoryModel.php';
-require_once __DIR__ . '/../src/models/WalletModel.php';
+require_once __DIR__ . '/../Src/models/ExpenseModel.php';
+require_once __DIR__ . '/../Src/models/CategoryModel.php';
+require_once __DIR__ . '/../Src/models/WalletModel.php';
 
 require_auth();
 $user = auth_user();
@@ -195,17 +195,18 @@ function parseSmartQuery(string $query): array
   return $result;
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
+
 <div class="page-head">
   <div>
     <h1>Expenses</h1>
-    <p class="muted">Add, filter, edit, and manage your daily spending.</p>
+    <p class="page-head-subtitle">Add, filter, and manage your daily spending</p>
   </div>
 </div>
 
 <div class="grid two-col">
-  <section id="add" class="card">
+  <section class="card" id="add">
     <div class="card-head">
       <h2>Add expense</h2>
     </div>
@@ -221,7 +222,7 @@ require_once __DIR__ . '/../src/partials/header.php';
       <div class="grid form-grid">
         <div class="field">
           <label>Amount (₹)</label>
-          <input name="amount" inputmode="decimal" placeholder="e.g., 120.50" value="<?= e($_POST['amount'] ?? '') ?>" required>
+          <input name="amount" inputmode="decimal" placeholder="e.g. 120.50" value="<?= e($_POST['amount'] ?? '') ?>" required>
           <?php if ($addErrors['amount']): ?><div class="hint error"><?= e($addErrors['amount']) ?></div><?php endif; ?>
         </div>
 
@@ -249,7 +250,7 @@ require_once __DIR__ . '/../src/partials/header.php';
           <select name="payment_method">
             <option value="cash" <?= ($_POST['payment_method'] ?? 'cash') === 'cash' ? 'selected' : '' ?>>Cash</option>
             <option value="card" <?= ($_POST['payment_method'] ?? '') === 'card' ? 'selected' : '' ?>>Card</option>
-            <option value="wallet" <?= ($_POST['payment_method'] ?? '') === 'wallet' ? 'selected' : '' ?>>Wallet (<?= e(money_fmt($walletBalance)) ?>)</option>
+            <option value="wallet" <?= ($_POST['payment_method'] ?? '') === 'wallet' ? 'selected' : '' ?>>Wallet (Rs. <?= e(money_fmt($walletBalance)) ?>)</option>
             <option value="other" <?= ($_POST['payment_method'] ?? '') === 'other' ? 'selected' : '' ?>>Other</option>
           </select>
         </div>
@@ -257,22 +258,24 @@ require_once __DIR__ . '/../src/partials/header.php';
 
       <div class="field">
         <label>Note</label>
-        <input name="note" maxlength="255" placeholder="e.g., lunch / taxi / groceries" value="<?= e($_POST['note'] ?? '') ?>">
+        <input name="note" maxlength="255" placeholder="e.g. lunch / taxi / groceries" value="<?= e($_POST['note'] ?? '') ?>">
         <div class="hint muted">Optional. Max 255 chars.</div>
       </div>
 
-      <button class="btn" type="submit">Add expense</button>
+      <button class="btn btn-primary" type="submit">Add expense</button>
     </form>
   </section>
 
   <section class="card">
     <div class="card-head">
-      <h2>Search & filters</h2>
+      <h2>Search &amp; filters</h2>
     </div>
 
     <div class="smart-search-wrap">
       <div class="smart-search-input-wrap">
-        <span class="smart-search-icon">🔍</span>
+        <span class="smart-search-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
         <input
           id="smart-search"
           type="text"
@@ -324,24 +327,24 @@ require_once __DIR__ . '/../src/partials/header.php';
       </div>
 
       <div class="row-actions">
-        <button class="btn" type="submit">Apply</button>
-        <a class="btn btn-ghost" href="<?= e(base_url('/expenses.php')) ?>">Reset</a>
+        <button class="btn btn-primary" type="submit">Apply</button>
+        <a class="btn btn-secondary" href="<?= e(base_url('/expenses.php')) ?>">Reset</a>
       </div>
     </form>
   </section>
 </div>
 
-<section class="card">
+<section class="card" style="margin-top: var(--space-5);">
   <div class="card-head">
     <h2>Expense list</h2>
     <div class="muted small"><?= count($rows) ?> result(s)</div>
   </div>
 
   <?php if (!$rows): ?>
-    <p class="muted">No expenses found. Try adding one or adjusting filters.</p>
+    <p class="muted" style="text-align:center; padding: var(--space-6) 0;">No expenses found. Try adding one or adjusting filters.</p>
   <?php else: ?>
     <div class="table">
-      <div class="row head">
+      <div class="table-row head">
         <div>Date</div>
         <div>Category</div>
         <div>Note</div>
@@ -351,19 +354,18 @@ require_once __DIR__ . '/../src/partials/header.php';
       </div>
 
       <?php foreach ($rows as $r): ?>
-        <div class="row">
+        <div class="table-row">
           <div><?= e($r['expense_date']) ?></div>
           <div><?= e($r['category_name'] ?? 'Uncategorized') ?></div>
-          <div class="truncate"><?= e($r['note'] ?? '') ?></div>
+          <div class="truncate"><?= e($r['note'] ?? '—') ?></div>
           <div>
             <span class="badge badge-<?= e($r['payment_method'] === 'wallet' ? 'success' : ($r['payment_method'] === 'card' ? 'info' : 'secondary')) ?>">
               <?= e(ucfirst((string)($r['payment_method'] ?? 'cash'))) ?>
             </span>
           </div>
-          <div class="right strong">₹ <?= e(money_fmt((float)$r['amount'])) ?></div>
-          <div class="right">
-            <a class="btn btn-sm btn-ghost" href="<?= e(base_url('/expense_edit.php?id=' . (int)$r['id'])) ?>">Edit</a>
-
+          <div class="right strong tabular">Rs. <?= e(money_fmt((float)$r['amount'])) ?></div>
+          <div class="right" style="display:flex; gap:6px; justify-content:flex-end;">
+            <a class="btn btn-sm btn-secondary" href="<?= e(base_url('/expense_edit.php?id=' . (int)$r['id'])) ?>">Edit</a>
             <form method="post" class="inline" data-confirm="Delete this expense?">
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="delete">
@@ -377,4 +379,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   <?php endif; ?>
 </section>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

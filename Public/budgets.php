@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap_form.php';
-require_once __DIR__ . '/../src/models/BudgetModel.php';
-require_once __DIR__ . '/../src/models/ExpenseModel.php';
+require_once __DIR__ . '/../Src/models/BudgetModel.php';
+require_once __DIR__ . '/../Src/models/ExpenseModel.php';
 
 require_auth();
 $user = auth_user();
@@ -49,7 +49,7 @@ foreach ($recentBudgets as $b) {
   ];
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
@@ -85,7 +85,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         </div>
       </div>
 
-      <button class="btn" type="submit">Save budget</button>
+      <button class="btn btn-primary" type="submit">Save budget</button>
       <div class="hint muted">Tip: Set current month first, then track remaining from Dashboard.</div>
     </form>
   </section>
@@ -100,7 +100,7 @@ require_once __DIR__ . '/../src/partials/header.php';
       <p class="muted">No budgets yet. Add one on the left.</p>
     <?php else: ?>
       <div class="table">
-        <div class="row head">
+        <div class="table-row head">
           <div>Month</div>
           <div class="right">Budget</div>
           <div class="right">Spent</div>
@@ -108,7 +108,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         </div>
 
         <?php foreach ($budgetWithSpend as $b): ?>
-          <div class="row">
+          <div class="table-row">
             <div><?= e($b['month_key']) ?></div>
             <div class="right strong">₹ <?= e(money_fmt($b['budget'])) ?></div>
             <div class="right">₹ <?= e(money_fmt($b['spent'])) ?></div>
@@ -122,4 +122,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   </section>
 </div>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

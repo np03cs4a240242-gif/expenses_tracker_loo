@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap_form.php';
-require_once __DIR__ . '/../src/models/ExpenseModel.php';
-require_once __DIR__ . '/../src/models/CategoryModel.php';
-require_once __DIR__ . '/../src/models/WalletModel.php';
+require_once __DIR__ . '/../Src/models/ExpenseModel.php';
+require_once __DIR__ . '/../Src/models/CategoryModel.php';
+require_once __DIR__ . '/../Src/models/WalletModel.php';
 
 require_auth();
 $user = auth_user();
@@ -102,7 +102,7 @@ if (is_post()) {
   }
 }
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="page-head">
   <div>
@@ -126,56 +126,56 @@ require_once __DIR__ . '/../src/partials/header.php';
   <form method="post" class="form">
     <?= csrf_field() ?>
 
-      <div class="grid form-grid">
-        <div class="field">
-          <label>Amount (₹)</label>
-          <input name="amount" value="<?= e($_POST['amount'] ?? (string)$row['amount']) ?>" required>
-          <?php if ($errors['amount']): ?><div class="hint error"><?= e($errors['amount']) ?></div><?php endif; ?>
-        </div>
-
-        <div class="field">
-          <label>Date</label>
-          <input type="date" name="expense_date" value="<?= e($_POST['expense_date'] ?? (string)$row['expense_date']) ?>" required>
-          <?php if ($errors['expense_date']): ?><div class="hint error"><?= e($errors['expense_date']) ?></div><?php endif; ?>
-        </div>
-
-        <div class="field">
-          <label>Category</label>
-          <select name="category_id">
-            <option value="">Uncategorized</option>
-            <?php
-              $selected = $_POST['category_id'] ?? (string)($row['category_id'] ?? '');
-            ?>
-            <?php foreach ($categories as $c): ?>
-              <option value="<?= (int)$c['id'] ?>" <?= (string)$c['id'] === (string)$selected ? 'selected' : '' ?>>
-                <?= e($c['name']) ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Payment method</label>
-          <select name="payment_method">
-            <?php $pm = $_POST['payment_method'] ?? (string)($row['payment_method'] ?? 'cash'); ?>
-            <option value="cash" <?= $pm === 'cash' ? 'selected' : '' ?>>Cash</option>
-            <option value="card" <?= $pm === 'card' ? 'selected' : '' ?>>Card</option>
-            <option value="wallet" <?= $pm === 'wallet' ? 'selected' : '' ?>>Wallet (<?= e(money_fmt($walletBalance)) ?>)</option>
-            <option value="other" <?= $pm === 'other' ? 'selected' : '' ?>>Other</option>
-          </select>
-        </div>
+    <div class="grid form-grid">
+      <div class="field">
+        <label>Amount (₹)</label>
+        <input name="amount" value="<?= e($_POST['amount'] ?? (string)$row['amount']) ?>" required>
+        <?php if ($errors['amount']): ?><div class="hint error"><?= e($errors['amount']) ?></div><?php endif; ?>
       </div>
 
       <div class="field">
-        <label>Note</label>
-        <input name="note" maxlength="255" value="<?= e($_POST['note'] ?? (string)($row['note'] ?? '')) ?>">
+        <label>Date</label>
+        <input type="date" name="expense_date" value="<?= e($_POST['expense_date'] ?? (string)$row['expense_date']) ?>" required>
+        <?php if ($errors['expense_date']): ?><div class="hint error"><?= e($errors['expense_date']) ?></div><?php endif; ?>
       </div>
 
+      <div class="field">
+        <label>Category</label>
+        <select name="category_id">
+          <option value="">Uncategorized</option>
+          <?php
+            $selected = $_POST['category_id'] ?? (string)($row['category_id'] ?? '');
+          ?>
+          <?php foreach ($categories as $c): ?>
+            <option value="<?= (int)$c['id'] ?>" <?= (string)$c['id'] === (string)$selected ? 'selected' : '' ?>>
+              <?= e($c['name']) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Payment method</label>
+        <select name="payment_method">
+          <?php $pm = $_POST['payment_method'] ?? (string)($row['payment_method'] ?? 'cash'); ?>
+          <option value="cash" <?= $pm === 'cash' ? 'selected' : '' ?>>Cash</option>
+          <option value="card" <?= $pm === 'card' ? 'selected' : '' ?>>Card</option>
+          <option value="wallet" <?= $pm === 'wallet' ? 'selected' : '' ?>>Wallet (<?= e(money_fmt($walletBalance)) ?>)</option>
+          <option value="other" <?= $pm === 'other' ? 'selected' : '' ?>>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Note</label>
+      <input name="note" maxlength="255" value="<?= e($_POST['note'] ?? (string)($row['note'] ?? '')) ?>">
+    </div>
+
     <div class="row-actions">
-      <button class="btn" type="submit">Save changes</button>
+      <button class="btn btn-primary" type="submit">Save changes</button>
       <a class="btn btn-ghost" href="<?= e(base_url('/expenses.php')) ?>">Cancel</a>
     </div>
   </form>
 </section>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

@@ -63,7 +63,7 @@ $resendWait = seconds_until_otp_resend($pendingUser);
 $backUrl = $otpSource === 'reset' ? base_url('/forgot_password.php') : base_url('/login.php');
 $backLabel = $otpSource === 'reset' ? 'Start reset again' : 'Back to login';
 
-require_once __DIR__ . '/../src/partials/header.php';
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
 <div class="auth-wrap">
   <section class="card auth-card">
@@ -99,7 +99,7 @@ require_once __DIR__ . '/../src/partials/header.php';
         <?php if ($errors['otp']): ?><div class="hint error"><?= e($errors['otp']) ?></div><?php endif; ?>
       </div>
 
-      <button class="btn btn-block" type="submit">Verify code</button>
+      <button class="btn btn-primary btn-block" type="submit">Verify code</button>
     </form>
 
     <form method="post" class="form">
@@ -138,4 +138,4 @@ require_once __DIR__ . '/../src/partials/header.php';
     </ul>
   </aside>
 </div>
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>

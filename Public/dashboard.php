@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../Src/bootstrap.php';
-require_once __DIR__ . '/../src/models/ExpenseModel.php';
-require_once __DIR__ . '/../src/models/BudgetModel.php';
-require_once __DIR__ . '/../src/models/WalletModel.php';
-require_once __DIR__ . '/../src/models/AIRecommendationModel.php';
+require_once __DIR__ . '/../Src/models/ExpenseModel.php';
+require_once __DIR__ . '/../Src/models/BudgetModel.php';
+require_once __DIR__ . '/../Src/models/WalletModel.php';
+require_once __DIR__ . '/../Src/models/AIRecommendationModel.php';
 
 require_auth();
 $user = auth_user();
@@ -16,6 +16,7 @@ $today = date('Y-m-d');
 $monthKey = date('Y-m');
 $todayTotal = ExpenseModel::sumForDate((int)$user['id'], $today);
 $monthTotal = ExpenseModel::sumForMonth((int)$user['id'], $monthKey);
+$allTimeTotal = ExpenseModel::sumAll((int)$user['id']);
 
 $budgetRow = BudgetModel::get((int)$user['id'], $monthKey);
 $budget = $budgetRow ? (float)$budgetRow['amount'] : 0.0;
@@ -39,77 +40,123 @@ usort($allInsights, function ($a, $b) {
 
 $topInsights = array_slice($allInsights, 0, 4);
 
-require_once __DIR__ . '/../src/partials/header.php';
+// Category breakdown for chart
+$categoryBreakdown = ExpenseModel::categoryBreakdown((int)$user['id'], $monthKey);
+
+require_once __DIR__ . '/../Src/partials/header.php';
 ?>
+
 <div class="page-head">
   <div>
     <h1>Dashboard</h1>
-    <p class="muted">Here is a quick look at your spending for <?= e(date('F Y')) ?>.</p>
+    <p class="page-head-subtitle">Overview of your spending habits and financial activity</p>
   </div>
   <div class="actions">
-    <a class="btn" href="<?= e(base_url('/expenses.php')) ?>#add">Add expense</a>
+    <a class="btn btn-primary" href="<?= e(base_url('/expenses.php')) ?>#add">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add expense
+    </a>
   </div>
 </div>
 
 <div class="grid stats-grid">
-  <div class="card stat">
-    <div class="stat-label">Spent today</div>
-    <div class="stat-value">Rs. <?= e(money_fmt($todayTotal)) ?></div>
-    <div class="stat-sub muted">Date: <?= e($today) ?></div>
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    <div class="stat-label">Total Expenses</div>
+    <div class="stat-value tabular">Rs. <?= e(money_fmt($allTimeTotal)) ?></div>
+    <div class="stat-sub">All time spending</div>
   </div>
 
-  <div class="card stat">
-    <div class="stat-label">Spent this month</div>
-    <div class="stat-value">Rs. <?= e(money_fmt($monthTotal)) ?></div>
-    <div class="stat-sub muted"><?= e($monthKey) ?></div>
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <div class="stat-label">This Month</div>
+    <div class="stat-value tabular">Rs. <?= e(money_fmt($monthTotal)) ?></div>
+    <div class="stat-sub"><?= e($monthKey) ?></div>
   </div>
 
-  <div class="card stat">
-    <div class="stat-label">Monthly budget</div>
-    <div class="stat-value"><?= $budget > 0 ? 'Rs. ' . e(money_fmt($budget)) : '<span class="muted">Not set yet</span>' ?></div>
-    <div class="stat-sub muted">
-      <a href="<?= e(base_url('/budgets.php')) ?>">Set budget</a>
-    </div>
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    <div class="stat-label">Average Expense</div>
+    <div class="stat-value tabular">Rs. <?= e(money_fmt($monthTotal > 0 ? $monthTotal / max(1, count($recent)) : 0)) ?></div>
+    <div class="stat-sub">Per transaction</div>
   </div>
 
-  <div class="card stat">
-    <div class="stat-label">Budget left</div>
-    <div class="stat-value"><?= $budget > 0 ? 'Rs. ' . e(money_fmt($remaining)) : '<span class="muted">Add a budget first</span>' ?></div>
-    <div class="stat-sub muted">Your budget minus this month&apos;s spending</div>
-  </div>
-
-  <div class="card stat">
-    <div class="stat-label">Wallet balance</div>
-    <div class="stat-value">Rs. <?= e(money_fmt($walletBalance)) ?></div>
-    <div class="stat-sub muted">
-      <a href="<?= e(base_url('/wallet.php')) ?>">Manage wallet</a>
-    </div>
+  <div class="stat-card">
+    <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <div class="stat-label">Total Transactions</div>
+    <div class="stat-value tabular"><?= e((string)count($recent)) ?></div>
+    <div class="stat-sub">Tracked expenses</div>
   </div>
 </div>
 
-<div class="grid two-col">
+<div class="grid two-col" style="margin-top: var(--space-5);">
   <section class="card">
     <div class="card-head">
-      <h2>Recent expenses</h2>
+      <h2>Spending by Category</h2>
+    </div>
+    <?php if (!$categoryBreakdown): ?>
+      <p class="muted" style="text-align:center; padding: var(--space-6) 0;">No spending data yet this month.</p>
+    <?php else: ?>
+      <div class="chart-container" style="display:flex; align-items:center; justify-content:center; min-height:260px;">
+        <div style="display:flex; flex-wrap:wrap; gap: var(--space-4); justify-content:center; align-items:center;">
+          <?php
+          $chartColors = [
+            'Food & Dining' => 'var(--chart-food)',
+            'Shopping' => 'var(--chart-shopping)',
+            'Transportation' => 'var(--chart-transport)',
+            'Entertainment' => 'var(--chart-entertain)',
+            'Bills & Utilities' => 'var(--chart-bills)',
+            'Healthcare' => 'var(--chart-healthcare)',
+            'Education' => 'var(--chart-education)',
+          ];
+          $totalCat = array_sum(array_column($categoryBreakdown, 'total'));
+          foreach ($categoryBreakdown as $cat):
+            $pct = $totalCat > 0 ? round(((float)$cat['total'] / $totalCat) * 100) : 0;
+            $color = $chartColors[$cat['name']] ?? 'var(--accent)';
+          ?>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:12px;height:12px;border-radius:3px;background:<?= $color ?>;flex-shrink:0;"></div>
+              <span style="font-size:13px;color:var(--muted);"><?= e($cat['name']) ?>: <?= $pct ?>%</span>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    <?php endif; ?>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Spending Trend (Last 7 Days)</h2>
+    </div>
+    <div class="chart-container" style="display:flex; align-items:center; justify-content:center; min-height:260px;">
+      <p class="muted">Chart coming soon — daily spending visualization.</p>
+    </div>
+  </section>
+</div>
+
+<div class="grid two-col" style="margin-top: var(--space-5);">
+  <section class="card">
+    <div class="card-head">
+      <h2>Recent Expenses</h2>
       <a class="btn btn-ghost" href="<?= e(base_url('/expenses.php')) ?>">View all</a>
     </div>
 
     <?php if (!$recent): ?>
-      <p class="muted">You have not added any expenses yet. Start with the first one.</p>
+      <p class="muted" style="text-align:center; padding: var(--space-6) 0;">You have not added any expenses yet. Start with the first one.</p>
     <?php else: ?>
       <div class="table">
-        <div class="row head">
+        <div class="table-row head">
           <div>Date</div>
           <div>Category</div>
           <div>Note</div>
           <div class="right">Amount</div>
         </div>
         <?php foreach ($recent as $r): ?>
-          <div class="row">
+          <div class="table-row">
             <div><?= e($r['expense_date']) ?></div>
             <div><?= e($r['category_name'] ?? 'Uncategorized') ?></div>
-            <div class="truncate"><?= e($r['note'] ?? '') ?></div>
-            <div class="right strong">Rs. <?= e(money_fmt((float)$r['amount'])) ?></div>
+            <div class="truncate"><?= e($r['note'] ?? '—') ?></div>
+            <div class="right strong tabular">Rs. <?= e(money_fmt((float)$r['amount'])) ?></div>
           </div>
         <?php endforeach; ?>
       </div>
@@ -123,7 +170,7 @@ require_once __DIR__ . '/../src/partials/header.php';
     </div>
 
     <?php if (!$topInsights): ?>
-      <p class="muted">Not enough data yet. Add more expenses to get personalized insights.</p>
+      <p class="muted" style="text-align:center; padding: var(--space-6) 0;">Not enough data yet. Add more expenses to get personalized insights.</p>
     <?php else: ?>
       <div class="insights-list">
         <?php foreach ($topInsights as $insight): ?>
@@ -137,4 +184,4 @@ require_once __DIR__ . '/../src/partials/header.php';
   </section>
 </div>
 
-<?php require_once __DIR__ . '/../src/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/../Src/partials/footer.php'; ?>
