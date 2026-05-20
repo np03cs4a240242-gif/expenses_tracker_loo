@@ -6,11 +6,15 @@ require_once __DIR__ . '/../Src/models/ExpenseModel.php';
 require_once __DIR__ . '/../Src/models/BudgetModel.php';
 require_once __DIR__ . '/../Src/models/WalletModel.php';
 require_once __DIR__ . '/../Src/models/AIRecommendationModel.php';
+require_once __DIR__ . '/../Src/notification_service.php';
 
 require_auth();
 $user = auth_user();
 
 $title = 'Dashboard';
+
+NotificationService::checkExpenseReminder((int)$user['id']);
+NotificationService::generateWeeklySummary((int)$user['id']);
 
 $today = date('Y-m-d');
 $monthKey = date('Y-m');
@@ -89,7 +93,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
   </div>
 </div>
 
-<div class="grid two-col" style="margin-top: var(--space-5);">
+<div class="grid two-col" style="margin-top: var(--space-6);">
   <section class="card">
     <div class="card-head">
       <h2>Spending by Category</h2>
@@ -97,30 +101,71 @@ require_once __DIR__ . '/../Src/partials/header.php';
     <?php if (!$categoryBreakdown): ?>
       <p class="muted" style="text-align:center; padding: var(--space-6) 0;">No spending data yet this month.</p>
     <?php else: ?>
-      <div class="chart-container" style="display:flex; align-items:center; justify-content:center; min-height:260px;">
-        <div style="display:flex; flex-wrap:wrap; gap: var(--space-4); justify-content:center; align-items:center;">
-          <?php
-          $chartColors = [
-            'Food & Dining' => 'var(--chart-food)',
-            'Shopping' => 'var(--chart-shopping)',
-            'Transportation' => 'var(--chart-transport)',
-            'Entertainment' => 'var(--chart-entertain)',
-            'Bills & Utilities' => 'var(--chart-bills)',
-            'Healthcare' => 'var(--chart-healthcare)',
-            'Education' => 'var(--chart-education)',
-          ];
-          $totalCat = array_sum(array_column($categoryBreakdown, 'total'));
-          foreach ($categoryBreakdown as $cat):
-            $pct = $totalCat > 0 ? round(((float)$cat['total'] / $totalCat) * 100) : 0;
-            $color = $chartColors[$cat['name']] ?? 'var(--accent)';
-          ?>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <div style="width:12px;height:12px;border-radius:3px;background:<?= $color ?>;flex-shrink:0;"></div>
-              <span style="font-size:13px;color:var(--muted);"><?= e($cat['name']) ?>: <?= $pct ?>%</span>
-            </div>
-          <?php endforeach; ?>
-        </div>
+      <div class="chart-container" style="position:relative; height:280px; display:flex; align-items:center; justify-content:center;">
+        <canvas id="categoryPieChart"></canvas>
       </div>
+      <script>
+        (function() {
+          var ctx = document.getElementById('categoryPieChart');
+          if (!ctx) return;
+          var data = <?= json_encode($categoryBreakdown) ?>;
+          var chartColors = {
+            'Food & Dining': '#EF4444',
+            'Shopping': '#EC4899',
+            'Transportation': '#3B82F6',
+            'Entertainment': '#8B5CF6',
+            'Bills & Utilities': '#10B981',
+            'Healthcare': '#F59E0B',
+            'Education': '#14B8A6',
+          };
+          var labels = data.map(function(d) { return d.name || 'Uncategorized'; });
+          var values = data.map(function(d) { return parseFloat(d.total); });
+          var colors = labels.map(function(l) { return chartColors[l] || '#3B82F6'; });
+          new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+              labels: labels,
+              datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 0,
+                hoverOffset: 8,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '60%',
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    padding: 16,
+                    usePointStyle: true,
+                    pointStyleWidth: 10,
+                    font: { size: 12, family: '-apple-system, BlinkMacSystemFont, Inter, sans-serif' },
+                    color: '#6B7280',
+                  }
+                },
+                tooltip: {
+                  backgroundColor: '#111827',
+                  titleFont: { size: 13 },
+                  bodyFont: { size: 12 },
+                  padding: 10,
+                  cornerRadius: 8,
+                  callbacks: {
+                    label: function(ctx) {
+                      var total = ctx.dataset.data.reduce(function(a, b) { return a + b; }, 0);
+                      var pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                      return ' Rs. ' + ctx.parsed.toLocaleString() + ' (' + pct + '%)';
+                    }
+                  }
+                }
+              }
+            }
+          });
+        })();
+      </script>
     <?php endif; ?>
   </section>
 
@@ -134,7 +179,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
   </section>
 </div>
 
-<div class="grid two-col" style="margin-top: var(--space-5);">
+<div class="grid two-col" style="margin-top: var(--space-6);">
   <section class="card">
     <div class="card-head">
       <h2>Recent Expenses</h2>

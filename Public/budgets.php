@@ -54,7 +54,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
 <div class="page-head">
   <div>
     <h1>Monthly budgets</h1>
-    <p class="muted">Set a budget for each month (YYYY-MM).</p>
+    <p class="page-head-subtitle">Set a budget for each month (YYYY-MM).</p>
   </div>
 </div>
 

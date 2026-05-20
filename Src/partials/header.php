@@ -7,6 +7,12 @@ $flash = flash_get();
 
 $current_page = basename($_SERVER['PHP_SELF'] ?? '', '.php');
 
+$unreadNotifCount = 0;
+if ($user) {
+  require_once __DIR__ . '/../models/NotificationModel.php';
+  $unreadNotifCount = NotificationModel::unreadCount((int)$user['id']);
+}
+
 function nav_item(string $page, string $label, string $current_page, string $icon_path): string {
   $active = $page === $current_page ? ' active' : '';
   return '<a class="sidebar-link' . $active . '" href="' . e(base_url('/' . $page . '.php')) . '">'
@@ -22,6 +28,7 @@ $icons = [
   'wallet'        => '<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>',
   'recommendations' => '<path d="M12 2a7 7 0 0 1 7 7c0 3-2 5.5-4 7.5L12 20l-3-3.5C7 14.5 5 12 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/>',
   'reports'       => '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  'notifications' => '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
 ];
 ?>
 <!doctype html>
@@ -31,6 +38,7 @@ $icons = [
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title><?= e($title ?? 'Expense Tracker') ?></title>
   <link rel="stylesheet" href="<?= e(base_url('/assets/styles/main.css')) ?>">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script defer src="<?= e(base_url('/assets/scripts/app.js')) ?>"></script>
 </head>
 <body>
@@ -59,6 +67,13 @@ $icons = [
         <?= nav_item('wallet', 'Wallet', $current_page, $icons['wallet']) ?>
         <?= nav_item('recommendations', 'AI Insights', $current_page, $icons['recommendations']) ?>
         <?= nav_item('reports', 'Reports', $current_page, $icons['reports']) ?>
+        <a class="sidebar-link<?= $current_page === 'notifications' ? ' active' : '' ?>" href="<?= e(base_url('/notifications.php')) ?>">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><?= $icons['notifications'] ?></svg>
+          <span>Notifications</span>
+          <?php if ($unreadNotifCount > 0): ?>
+            <span class="notif-badge"><?= $unreadNotifCount > 9 ? '9+' : (string)$unreadNotifCount ?></span>
+          <?php endif; ?>
+        </a>
       </nav>
 
       <div class="sidebar-user">

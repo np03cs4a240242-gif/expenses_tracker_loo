@@ -18,5 +18,7 @@ api_success([
     'GET /expense-tracker/api/recommendations.php',
     'GET /expense-tracker/api/search_suggestions.php?q=...',
     'POST /expense-tracker/api/resend_otp.php',
+    'GET /expense-tracker/api/notifications.php?action=list|unread_count',
+    'POST /expense-tracker/api/notifications.php?action=mark_read|mark_all_read',
   ],
 ]);

@@ -46,7 +46,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
 <div class="page-head">
   <div>
     <h1>Categories</h1>
-    <p class="muted">Keep your spending organized.</p>
+    <p class="page-head-subtitle">Keep your spending organized.</p>
   </div>
 </div>
 

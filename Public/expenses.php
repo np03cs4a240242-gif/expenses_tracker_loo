@@ -5,6 +5,7 @@ require_once __DIR__ . '/../Src/bootstrap_form.php';
 require_once __DIR__ . '/../Src/models/ExpenseModel.php';
 require_once __DIR__ . '/../Src/models/CategoryModel.php';
 require_once __DIR__ . '/../Src/models/WalletModel.php';
+require_once __DIR__ . '/../Src/notification_service.php';
 
 require_auth();
 $user = auth_user();
@@ -63,6 +64,8 @@ if (is_post() && ($_POST['action'] ?? '') === 'add') {
       }
 
       if (!$addErrors['general']) {
+        NotificationService::checkBudgetExceeded((int)$user['id'], date('Y-m'));
+        NotificationService::checkUnusualSpending((int)$user['id'], $expenseId);
         flash_set('success', 'Expense added.');
         redirect(base_url('/expenses.php'));
       }
@@ -334,7 +337,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
   </section>
 </div>
 
-<section class="card" style="margin-top: var(--space-5);">
+<section class="card" style="margin-top: var(--space-6);">
   <div class="card-head">
     <h2>Expense list</h2>
     <div class="muted small"><?= count($rows) ?> result(s)</div>

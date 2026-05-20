@@ -44,6 +44,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
   </div>
 </div>
 
+<div class="reports-section">
 <section class="card">
   <div class="card-head">
     <h2>Category totals (range)</h2>
@@ -70,7 +71,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
     </div>
   </form>
 
-  <div class="grid two-col">
+  <div class="grid two-col" style="margin-top: var(--space-5);">
     <div class="card">
       <h3>Spending by category</h3>
       <canvas id="catChart" height="180"></canvas>
@@ -97,13 +98,15 @@ require_once __DIR__ . '/../Src/partials/header.php';
     </div>
   </div>
 </section>
+</div>
 
+<div class="reports-section">
 <section class="card">
   <div class="card-head">
     <h2>Monthly totals (<?= e((string)$year) ?>)</h2>
   </div>
 
-  <div class="grid two-col">
+  <div class="grid two-col" style="margin-top: var(--space-5);">
     <div class="card">
       <h3>Monthly trend</h3>
       <canvas id="monthChart" height="180"></canvas>
@@ -126,6 +129,7 @@ require_once __DIR__ . '/../Src/partials/header.php';
     </div>
   </div>
 </section>
+</div>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

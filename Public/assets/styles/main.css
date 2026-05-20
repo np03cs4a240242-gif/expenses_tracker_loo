@@ -30,12 +30,14 @@
   --radius-md: 12px;
   --radius-lg: 16px;
 
-  --space-1: 8px;
-  --space-2: 12px;
-  --space-3: 16px;
-  --space-4: 20px;
-  --space-5: 24px;
-  --space-6: 32px;
+  --space-1: 10px;
+  --space-2: 14px;
+  --space-3: 20px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 40px;
+  --space-7: 48px;
+  --space-8: 56px;
 
   --sidebar-w: 260px;
   --font-main: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -60,9 +62,9 @@ a:hover { text-decoration: underline; }
 
 h1, h2, h3, h4, p { margin-top: 0; }
 
-h1 { font-size: clamp(24px, 2.5vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: var(--space-1); }
-h2 { font-size: 18px; font-weight: 600; margin-bottom: var(--space-2); }
-h3 { font-size: 15px; font-weight: 600; margin-bottom: var(--space-1); }
+h1 { font-size: clamp(24px, 2.5vw, 32px); font-weight: 700; letter-spacing: -0.01em; margin-bottom: var(--space-2); }
+h2 { font-size: 18px; font-weight: 600; margin-bottom: var(--space-3); }
+h3 { font-size: 15px; font-weight: 600; margin-bottom: var(--space-2); }
 
 input, select, button, textarea { font: inherit; }
 
@@ -121,17 +123,17 @@ input, select, button, textarea { font: inherit; }
 
 .sidebar-nav {
   flex: 1;
-  padding: var(--space-3) var(--space-3);
+  padding: var(--space-4) var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 10px var(--space-3);
+  padding: 12px var(--space-3);
   border-radius: var(--radius-sm);
   color: var(--muted);
   font-size: 14px;
@@ -157,6 +159,26 @@ input, select, button, textarea { font: inherit; }
 }
 
 .sidebar-link.active svg { opacity: 1; }
+
+.sidebar-link {
+  position: relative;
+}
+
+.notif-badge {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--danger);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1.2;
+}
 
 .sidebar-footer {
   padding: var(--space-4);
@@ -240,8 +262,8 @@ input, select, button, textarea { font: inherit; }
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
 
@@ -256,7 +278,7 @@ input, select, button, textarea { font: inherit; }
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: var(--space-5);
+  padding: var(--space-6);
 }
 
 .card-head {
@@ -264,13 +286,13 @@ input, select, button, textarea { font: inherit; }
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .card-head h2 { margin-bottom: 0; }
 
 /* 7. Grid */
-.grid { display: grid; gap: var(--space-4); }
+.grid { display: grid; gap: var(--space-5); }
 .two-col { grid-template-columns: 1.2fr 0.9fr; }
 .stats-grid { grid-template-columns: repeat(4, 1fr); }
 
@@ -279,10 +301,10 @@ input, select, button, textarea { font: inherit; }
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: var(--space-5);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
   position: relative;
 }
 
@@ -370,12 +392,12 @@ input, select, button, textarea { font: inherit; }
 .actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
 
 /* 10. Forms */
-.form { display: flex; flex-direction: column; gap: var(--space-3); }
+.form { display: flex; flex-direction: column; gap: var(--space-4); }
 .form-grid { grid-template-columns: repeat(2, 1fr); }
 
 .field label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-1);
   font-size: 13px;
   font-weight: 500;
   color: var(--fg);
@@ -413,7 +435,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: var(--space-3);
   align-items: center;
-  padding: var(--space-3) var(--space-3);
+  padding: var(--space-4) var(--space-3);
   border-bottom: 1px solid var(--border);
 }
 
@@ -442,11 +464,11 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
   margin: 0 auto;
 }
 
-.auth-card { padding: var(--space-6); }
-.auth-card h1 { margin-bottom: var(--space-1); }
+.auth-card { padding: var(--space-7); }
+.auth-card h1 { margin-bottom: var(--space-2); }
 
 .auth-side {
-  padding: var(--space-6);
+  padding: var(--space-7);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -470,7 +492,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 .checklist li { margin: var(--space-2) 0; color: var(--muted); }
 
 /* 13. Flash Messages */
-.flash-stack { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
+.flash-stack { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-5); }
 
 .flash {
   display: flex;
@@ -518,7 +540,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 .badge-info    { background: oklch(60% 0.16 255 / 0.1); color: var(--info); }
 .badge-secondary { background: oklch(55% 0.02 250 / 0.1); color: var(--muted); }
 
-.pill-grid { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.pill-grid { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
 .pill {
   display: flex;
@@ -546,13 +568,13 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 .pill-x:hover { background: var(--border); }
 
 /* 15. Insights */
-.insights-list { display: flex; flex-direction: column; gap: var(--space-2); }
+.insights-list { display: flex; flex-direction: column; gap: var(--space-3); }
 
 .insight-item {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  padding: var(--space-3);
+  padding: var(--space-4);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface);
@@ -610,7 +632,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
   top: 100%;
   left: 0; right: 0;
   z-index: 100;
-  margin-top: 4px;
+  margin-top: var(--space-1);
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -640,7 +662,7 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 .search-suggestion-type { flex-shrink: 0; font-size: 11px; color: var(--muted); padding: 2px 8px; border-radius: 999px; background: var(--surface); }
 
 /* 17. Quick Actions */
-.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 
 .qa {
   display: block;
@@ -658,6 +680,35 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
 
 /* 18. Chart placeholders */
 .chart-container { width: 100%; min-height: 280px; }
+
+/* 20. Wallet page — extra breathing room */
+.wallet-section {
+  margin-bottom: var(--space-7);
+}
+
+.wallet-section:last-child {
+  margin-bottom: 0;
+}
+
+.stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 28px var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  position: relative;
+}
+
+/* 21. Reports page — extra breathing room */
+.reports-section {
+  margin-bottom: var(--space-7);
+}
+
+.reports-section:last-child {
+  margin-bottom: 0;
+}
 
 /* 19. Responsive */
 @media (max-width: 1100px) {
