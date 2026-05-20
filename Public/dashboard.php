@@ -110,17 +110,25 @@ require_once __DIR__ . '/../Src/partials/header.php';
           if (!ctx) return;
           var data = <?= json_encode($categoryBreakdown) ?>;
           var chartColors = {
-            'Food & Dining': '#EF4444',
-            'Shopping': '#EC4899',
-            'Transportation': '#3B82F6',
-            'Entertainment': '#8B5CF6',
-            'Bills & Utilities': '#10B981',
-            'Healthcare': '#F59E0B',
-            'Education': '#14B8A6',
+            'Food & Dining': '#EF4444', 'Food': '#EF4444', 'food': '#EF4444',
+            'Shopping': '#EC4899', 'shopping': '#EC4899',
+            'Transportation': '#3B82F6', 'Transport': '#3B82F6', 'petrol': '#3B82F6', 'fuel': '#3B82F6',
+            'Entertainment': '#8B5CF6', 'Entertain': '#8B5CF6',
+            'Bills & Utilities': '#10B981', 'Bills': '#10B981', 'Utilities': '#10B981',
+            'Healthcare': '#F59E0B', 'Health': '#F59E0B',
+            'Education': '#14B8A6', 'School': '#14B8A6',
           };
+          var fallbackColors = ['#EF4444','#EC4899','#3B82F6','#8B5CF6','#10B981','#F59E0B','#14B8A6','#F97316','#6366F1','#84CC16'];
           var labels = data.map(function(d) { return d.name || 'Uncategorized'; });
           var values = data.map(function(d) { return parseFloat(d.total); });
-          var colors = labels.map(function(l) { return chartColors[l] || '#3B82F6'; });
+          var colors = labels.map(function(l, i) {
+            if (chartColors[l]) return chartColors[l];
+            var lower = l.toLowerCase();
+            for (var key in chartColors) {
+              if (lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)) return chartColors[key];
+            }
+            return fallbackColors[i % fallbackColors.length];
+          });
           new Chart(ctx, {
             type: 'doughnut',
             data: {
