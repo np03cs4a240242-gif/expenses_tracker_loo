@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 return [
   'app' => [
-    'base_url' => '',
+    'base_url' => '/expenses_tracker_loo/Public',
   ],
   'otp' => [
     // Choose 'smtp' for Gmail/Outlook SMTP, or 'resend' for Resend API.
